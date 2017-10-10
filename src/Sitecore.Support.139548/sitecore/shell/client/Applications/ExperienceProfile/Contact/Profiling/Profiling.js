@@ -95,7 +95,7 @@ define(["sitecore", "/-/speak/v1/experienceprofile/DataProviderHelper.js"], func
         }
 
         subapp.ProfilingRowAccordion.set("header", data.ProfileDisplayName);
-        subapp.BestPatternImage.set("imageUrl", "/sitecore/api/ao/v1/analytics/patterncards/" + data.BestMatchedPatternId + "/image?w=128&h=128");
+        
         subapp.RecencyVisitLabel.set(textProperty, data.LatestVisitIndex);
         subapp.RecencyLabel.set(textProperty, data.Recency);
         subapp.RadarChartLabel.set(textProperty, data.ProfileCalculationType);
@@ -105,6 +105,12 @@ define(["sitecore", "/-/speak/v1/experienceprofile/DataProviderHelper.js"], func
         subapp.BarsBorder.set("otherPatternMatches", subapp.OtherPatternMatchesLabel.get(textProperty));
         subapp.BarsBorder.set("patternPercentage", (data.BestMatchedPatternGravityShare * 100).toFixed(2));
         subapp.BarsBorder.set(isVisibleProperty, true);
+        
+        //Fix 139548
+        if (data.BestMatchedPatternId != null) {
+          subapp.BestPatternImage.set("imageUrl", "/sitecore/api/ao/v1/analytics/patterncards/" + data.BestMatchedPatternId + "/image?w=128&h=128");
+        }
+        //
 
         initRadarChart(subapp, data, intelBaseUrl);
         initOthePatternBars(subapp, data, intelBaseUrl);

@@ -9,6 +9,8 @@ using Sitecore.Cintel.Reporting.Processors;
 using Sitecore.Diagnostics;
 using Sitecore.Globalization;
 using System.Data;
+using Sitecore.Analytics.Data.Items;
+using Sitecore.Analytics;
 
 namespace Sitecore.Support.Cintel.Reporting.Contact.ProfileInfo.Processors
 {
@@ -37,10 +39,20 @@ namespace Sitecore.Support.Cintel.Reporting.Contact.ProfileInfo.Processors
         private bool ApplyPatternToOneProfile(ReportProcessorArgs args, DataRow profileRow)
         {
             bool flag = true;
-            if(profileRow.Field<Guid>(Sitecore.Cintel.Reporting.Contact.ProfileInfo.Schema.ProfileId.Name) == Guid.Empty)
+            var profileId = profileRow.Field<Guid>(Sitecore.Cintel.Reporting.Contact.ProfileInfo.Schema.ProfileId.Name);
+            if(profileId == Guid.Empty)
             {
                 flag = false;
             }
+
+            #region Sitecore Support Fix
+            ProfileItem profileFromSitecore = Tracker.DefinitionItems.Profiles[profileId];
+            if(profileFromSitecore.Patterns == null || !profileFromSitecore.Patterns.Any())
+            {
+                return false;
+            }
+            #endregion
+            
             ViewParameters parametersForRetrievingBestPattern = GetParametersForRetrievingBestPattern(args, profileRow);
             DataTable table = CustomerIntelligenceManager.ViewProvider.GenerateContactView(parametersForRetrievingBestPattern).Data.Dataset[parametersForRetrievingBestPattern.ViewName];
             if((table == null) || (table.Rows.Count <= 0))
