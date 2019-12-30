@@ -29,7 +29,7 @@ namespace Sitecore.Support.Cintel.Reporting.Contact.ProfileInfo.Processors
                 var mandatoryDataMissing = new NotificationMessage
                 {
                     Id = 13,
-                    MessageType = NotificationTypes.Error,
+                    MessageType = NotificationTypes.Warning,
                     Text = Translate.Text("One or more data entries are missing due to invalid data")
                 };
                 ReportProcessorBase.LogNotificationForView(args.ReportParameters.ViewName, mandatoryDataMissing);
